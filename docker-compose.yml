@@ -1,0 +1,105 @@
+#specify version
+version: '3'
+
+#specify containers to run
+services: 
+
+    redis-server:
+        image: 'redis:latest'
+
+        
+    postgres-db:
+        image: 'postgres:latest'
+        environment: 
+           - POSTGRES_PASSWORD=postgres_password
+
+        #restart: always
+        
+############ DEVELOPMENT CONTAINERS #################
+    express-server:
+        depends_on: 
+            - postgres-db
+        #specify image build for container
+        build:
+            context: ./express-server 
+            dockerfile: Dockerfile.dev
+        
+        #specify volume mapping
+        volumes: 
+            - /app/node_modules
+            - ./Express server:/app
+     
+        #specify how container interacts with redis and postgres
+        environment: 
+            - REDIS_HOST=redis-server
+            - REDIS_PORT=6379
+            - PGUSER=postgres 
+            - PGHOST=postgres-db
+            - PGDATABASE=postgres
+            - POSTGRES_PASSWORD=postgres_password 
+            - PG_PORT=5432 
+
+
+    worker:
+        #specify image build for container
+        build:
+            context: ./worker
+            dockerfile: Dockerfile.dev
+
+        #specify volume mapping
+        volumes: 
+            - /app/node_modules
+            - ./worker:/app
+        
+        #specify how container interacts with redis
+        environment:
+            - REDIS_HOST=redis-server
+            - REDIS_PORT=6379 
+
+    
+    client:
+        #specify image build for container
+        build: 
+            context: ./client
+            dockerfile: Dockerfile.dev
+
+        #specify volume mapping
+        volumes: 
+            - /app/node_modules
+            - ./client:/app
+
+        #specify how container interacts with redis and postgres
+        environment: 
+            - REDIS_HOST=redis-server
+            - REDIS_PORT=6379
+            - PGUSER=postgres 
+            - PGHOST=postgres-db
+            - PGDATABASE=postgres
+            - POSTGRES_PASSWORD=postgres_password 
+            - PG_PORT=5432
+    
+    
+    nginx:
+        #specify nginx dependency
+        depends_on: 
+            - express-server
+            - client
+
+        #specify restart policy
+        restart: always
+
+        #specify image build for container
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile.dev 
+
+        #specify port mapping 
+        ports: 
+            - '3050:80'
+        
+    
+
+
+
+
+

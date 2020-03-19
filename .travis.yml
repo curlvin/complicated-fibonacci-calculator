@@ -1,0 +1,53 @@
+######## Using Travis as Test Suite #######
+language: generic
+
+#specify admin access
+sudo: required
+
+#specify programs to run
+sevices:
+    - docker
+
+before_install:
+    #specify file path for test image build
+    - docker build -t macshild/client-test -f ./client/Dockerfile.dev ./client 
+
+    #- docker build myotherproject
+
+
+#specify instructions for running test suite container
+script:
+    - docker run -e CI=true macshild/client-test npm run test
+
+    #-docker run my other project
+
+######## build prod images after successful tests##############    
+after_success:
+    #build express server image
+    - docker build -t macshild/fib-seq-calc-express-server ./express-server
+
+    #build client image
+    - docker build -t macshild/fib-seq-calc-client-with-nginx ./client
+    
+    #build nginx server image
+    - docker build -t macshild/fib-seq-calc-nginx-routing-server ./nginx
+
+    #build worker image
+    - docker build -t macshild/fib-seq-calc-worker ./worker
+
+    ######### Use Travis to send prod images to docker hub ##########
+
+    #log in to the docker cli with travis
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin #auto input pswd over stdin in docker cli
+
+    #push image to docker hub
+    - push macshild/fib-seq-calc-express-server
+    - push macshild/fib-seq-calc-client-with-nginx
+    - push macshild/fib-seq-calc-nginx-routing-server
+    - push macshild/fib-seq-calc-worker 
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+#specify base image
+FROM node:alpine
+
+#specify working dir in container
+WORKDIR /app
+
+#copy config file to workdir
+COPY ./package.json .
+
+#install dependencies
+RUN npm install
+
+#copy everything elese
+COPY . .
+
+#specify startup command
+CMD ["npm","run","dev"]
