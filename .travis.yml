@@ -41,10 +41,10 @@ after_success:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin #auto input pswd over stdin in docker cli
 
     #push image to docker hub
-    - push macshild/fib-seq-calc-express-server
-    - push macshild/fib-seq-calc-client-with-nginx
-    - push macshild/fib-seq-calc-nginx-routing-server
-    - push macshild/fib-seq-calc-worker 
+    - docker push macshild/fib-seq-calc-express-server
+    - docker push macshild/fib-seq-calc-client-with-nginx
+    - docker push macshild/fib-seq-calc-nginx-routing-server
+    - docker push macshild/fib-seq-calc-worker 
 
 
 
