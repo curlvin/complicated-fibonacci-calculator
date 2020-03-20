@@ -5,30 +5,34 @@
             "name":"client",
             "image":"macshild/fib-seq-calc-client-with-nginx",
             "hostname":"client",
-            "essential":false
+            "essential":false,
+            "memory":128
         },
         {
             "name":"express-server",
             "image":"macshild/fib-seq-calc-express-server",
             "hostname":"express-server",
-            "essential":false
+            "essential":false,
+            "memory":128
 
         },
         {
             "name":"worker",
             "image":"macshild/fib-seq-calc-worker", 
             "hostname":"worker",
-            "essential":false
+            "essential":false,
+            "memory":128
         },
         {
             "name":"nginx",
             "image":"macshild/fib-seq-calc-nginx-routing-server",
             "hostname":"nginx",
             "essential":true,
+            "memory":128,
             "portMappings":[
                 {
                     "hostPort":80,
-                    "container":80
+                    "containerPort":80
                 }
             ],
             "links":["client","express-server"]
