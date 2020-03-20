@@ -47,6 +47,33 @@ after_success:
     - docker push macshild/fib-seq-calc-worker 
 
 
+ ##tell Elastic beanstalk to pull images from dockerhub by sending Dockerrun.aws.json file
+
+######## Using Travis CI to Deploy to Elastic Beanstalk ########
+deploy:
+    ##fix for missing bucket_name error
+    edge: true
+
+    #specify name of hosting service
+    provider: elasticbeanstalk
+    region: "us-east-1"
+    app: "complicated-fibonacci-seq-calculator"
+    env: "ComplicatedFibonacciSeqCalculator-env"
+
+    #specify bucket containing zip file of  code uploaded by travis to be redeploy by AWS.
+    bucket_name: "elasticbeanstalk-us-east-1-972707242260"
+
+    #specify dir in bucket containing app files
+    #use app name for a frist time scenario
+    bucket_path: "complicated-fibonacci-seq-calculator"
+
+    on:
+        #specify branch in codebase that can only triger deploy to EBS
+        branch: master
+
+    #specify api keys that grants travis access to AWS
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY    
 
 
 

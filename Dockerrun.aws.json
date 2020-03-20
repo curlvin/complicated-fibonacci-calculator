@@ -1,0 +1,38 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name":"client",
+            "image":"macshild/fib-seq-calc-client-with-nginx",
+            "hostname":"client",
+            "essential":false
+        },
+        {
+            "name":"express-server",
+            "image":"macshild/fib-seq-calc-express-server",
+            "hostname":"express-server",
+            "essential":false
+
+        },
+        {
+            "name":"worker",
+            "image":"macshild/fib-seq-calc-worker", 
+            "hostname":"worker",
+            "essential":false
+        },
+        {
+            "name":"nginx",
+            "image":"macshild/fib-seq-calc-nginx-routing-server",
+            "hostname":"nginx",
+            "essential":true,
+            "portMappings":[
+                {
+                    "hostPort":80,
+                    "container":80
+                }
+            ],
+            "links":["client","express-server"]
+        }
+    ]
+}
+
