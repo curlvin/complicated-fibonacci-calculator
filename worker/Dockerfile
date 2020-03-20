@@ -1,5 +1,5 @@
 #specify base image
-FROM node:alpine as builder
+FROM node:alpine 
 
 #specify workdir
 WORKDIR /app
